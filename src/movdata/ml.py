@@ -25,7 +25,8 @@ def save_movies(year, per_page=10, sleep_time=1):
 
     # totCnt 갖여오고 total_pages 계산
     url_base = f"https://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key={API_KEY}&openStartDt={year}&openEndDt={year}"
-    r = req(url_base + f"curPage=1")
+    
+    r = req(url_base + "&curPage=1")
     tot_cnt = r['movieListResult']['totCnt']
     total_pages = (tot_cnt // per_page) + 1
 
@@ -33,13 +34,10 @@ def save_movies(year, per_page=10, sleep_time=1):
     all_data = []
     for page in tqdm(range(1, total_pages + 1)):
         time.sleep(sleep_time)
-        r = req(url)
+        r = req(url_base + f"&curPage={page}")
         d = r['movieListResult']['movieList']
         all_data.extend(d)
 
     save_json(all_data, file_path)
     return True
-
-
-
 
